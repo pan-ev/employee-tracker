@@ -40,39 +40,18 @@ function init() {
       } else if (data.action === "View All Employees") {
         queries.viewEmployees(db);
       } else if (data.action === "Add a Department") {
-        inquirer.prompt([
-          {
-            type: 'input',
-            name: 'department_name',
-            message: 'Please enter the department name',
-          }
-        ])
-        .then((input) => {
-          queries.addDepartment(db, input.department_name);
-        })
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "department_name",
+              message: "Please enter the department name",
+            },
+          ])
+          .then((input) => {
+            queries.addDepartment(db, input.department_name);
+          });
       } else if (data.action === "Add a Role") {
-        inquirer.prompt([
-          {
-            type: "input",
-            name: "job_title",
-            message: "Please enter the role title",
-          },
-          {
-            type: "input",
-            name:"salary",
-            message: "Please enter the salary for the role",
-          },
-          {
-            type: "list",
-            message: "Select the role's department",
-            name: "action",
-            choices: [
-            ],
-          }
-        ])
-        .then((input) => {
-          queries.addRole(db, input);
-        })
         queries.addRole(db);
       } else if (data.action === "Add an Employee") {
         queries.addEmployee(db);
