@@ -13,6 +13,8 @@ Employee Tracker is a command-line application that allows a user to manage a co
 
 When the application is started, a user is presented with options to view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee's role. 
 
+[Walkthrough Video](https://drive.google.com/file/d/1pS1LVo_XBy2vAYpnJi7as94GJMWDbGxD/view?usp=sharing)
+
 ## Questions
 
 [pan-ev](https://github.com/pan-ev)   
