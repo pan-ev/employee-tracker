@@ -27,6 +27,13 @@ class Employee {
   }
 }
 
+class RoleUpdate {
+  constructor(employee, role) {
+    this.employee = employee;
+    this.role = role;
+  }
+}
+
 function init() {
   inquirer
     .prompt([
@@ -165,14 +172,57 @@ function init() {
             });
           });
       } else if (data.action === "Update an Employee Role") {
-        queries.updateEmployeeRole(db);
+        db.query(
+          "SELECT first_name, last_name, id FROM employee",
+          function (err, result) {
+            var employeeList = result.map(({ first_name, last_name, id }) => ({
+              name: `${first_name} ${last_name}`,
+              value: id,
+            }));
+
+            inquirer
+              .prompt([
+                {
+                  type: "list",
+                  message:
+                    "Select the employee whose role you'd like to update",
+                  name: "employeeChoice",
+                  choices: employeeList,
+                },
+              ])
+              .then((employeeInput) => {
+                const updatedRole = new RoleUpdate(
+                  employeeInput.employeeChoice,
+                  null
+                );
+                db.query("SELECT * FROM role", function (err, result) {
+                  var roleList = result.map(({ title, id }) => ({
+                    name: title,
+                    value: id,
+                  }));
+                  inquirer
+                    .prompt([
+                      {
+                        type: "list",
+                        message: "What should the employee's role be?",
+                        name: "updatedRole",
+                        choices: roleList,
+                      },
+                    ])
+                    .then((roleInput) => {
+                      updatedRole.role = roleInput.updatedRole;
+                      queries.updateEmployeeRole(db, updatedRole);
+                    });
+                });
+              });
+          }
+        );
       } else if (data.action === "Quit") {
         process.exit();
       }
-    })
-    .then(() => {
+
       init();
-    });
+    })
 }
 
 init();
