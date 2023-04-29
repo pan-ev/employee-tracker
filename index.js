@@ -10,6 +10,7 @@ const db = mysql.createConnection({
   database: "employee_db",
 });
 
+// Use classes to store properties of new Role, Employee, or Role Updates
 class Role {
   constructor(title, salary, department) {
     this.title = title;
@@ -87,8 +88,10 @@ function init() {
             },
           ])
           .then((input) => {
+            // Store the title and salary properties for your new role
             const newRole = new Role(input.job_title, input.salary);
             db.query("SELECT * FROM department", function (err, result) {
+              // Get a list of departments and their ids for the user to select from in inquirer prompt
               var departmentList = result.map(({ name, id }) => ({
                 name: name,
                 value: id,
@@ -153,6 +156,7 @@ function init() {
                         value: id,
                       })
                     );
+                    // Include the option to not have a manager since this won't come from the list of employees
                     managerList.push({ name: "Not Applicable", value: null });
                     inquirer
                       .prompt([
@@ -220,9 +224,11 @@ function init() {
       } else if (data.action === "Quit") {
         process.exit();
       }
-
+    })
+    .then((result) => {
+      // Reinitiate prompts after user finishes action
       init();
     })
-}
+  }
 
 init();
