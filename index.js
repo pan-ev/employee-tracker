@@ -10,8 +10,15 @@ const db = mysql.createConnection(
     password: "",
     database: "employee_db",
   },
-  console.log(`Connected to the classlist_db database.`)
 );
+
+class Role {
+  constructor(title, salary, department) {
+    this.title = title;
+    this.salary = salary;
+    this.department = department;
+  }
+}
 
 function init() {
   inquirer
@@ -52,7 +59,41 @@ function init() {
             queries.addDepartment(db, input.department_name);
           });
       } else if (data.action === "Add a Role") {
-        queries.addRole(db);
+        inquirer
+          .prompt([
+            {
+              type: "input",
+              name: "job_title",
+              message: "Please enter the role title",
+            },
+            {
+              type: "input",
+              name: "salary",
+              message: "Please enter the salary for the role",
+            },
+          ])
+          .then((input) => {
+            const newRole = new Role(input.job_title, input.salary,);
+            db.query("SELECT * FROM department", function (err, result) {
+              var departmentList = result.map(({ name, id }) => ({
+                name: name,
+                value: id,
+              }));
+
+              inquirer.prompt([
+                {
+                  type: "list",
+                  message: "Select the role's department",
+                  name: "depChoice",
+                  choices: departmentList,
+                },
+              ])
+              .then((data) => {
+                newRole.department = data.depChoice;
+                queries.addRole(db,newRole);
+              });
+            });
+          });
       } else if (data.action === "Add an Employee") {
         queries.addEmployee(db);
       } else if (data.action === "Update an Employee Role") {
@@ -62,5 +103,7 @@ function init() {
       }
     });
 }
+
+var departmentList;
 
 init();
